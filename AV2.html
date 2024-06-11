@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Formulário de Cadastro</title>
+    <link rel="stylesheet" href="av2.css">
+</head>
+<body>
+
+<div class="container">
+    <h2>Formulário de Cadastro</h2>
+    <form id="registrationForm">
+        <label for="name">Nome Completo:</label>
+        <input type="text" id="name" name="name" required>
+        <span id="nameError" class="error"></span>
+
+        <label for="email">E-mail:</label>
+        <input type="email" id="email" name="email" required>
+        <span id="emailError" class="error"></span>
+
+        <label for="birthdate">Data de Nascimento:</label>
+        <input type="date" id="birthdate" name="birthdate" required>
+        <span id="birthdateError" class="error"></span>
+
+        <label for="gender">Sexo:</label>
+        <select id="gender" name="gender" required>
+            <option value="">Selecione</option>
+            <option value="feminino">Feminino</option>
+            <option value="masculino">Masculino</option>
+        </select>
+        <span id="genderError" class="error"></span>
+
+        <label for="maritalStatus">Estado Civil:</label>
+        <select id="maritalStatus" name="maritalStatus" required>
+            <option value="">Selecione</option>
+            <option value="solteiro">Solteiro(a)</option>
+            <option value="casado">Casado(a)</option>
+            <option value="outros">Outros</option>
+        </select>
+        <span id="maritalStatusError" class="error"></span>
+
+        <label>Áreas de Interesse:</label>
+        <label><input type="checkbox" name="interests" value="analise"> Análise</label>
+        <label><input type="checkbox" name="interests" value="banco"> Banco de dados</label>
+        <label><input type="checkbox" name="interests" value="desenvolvimento"> Desenvolvimento</label>
+        <label><input type="checkbox" name="interests" value="engenharia"> Engenharia de software</label>
+        <label><input type="checkbox" name="interests" value="redes"> Redes de computadores</label>
+
+        <button type="button" onclick="validateForm()">Enviar</button>
+        <div id="resultMessage"></div>
+    </form>
+</div>
+
+<script>
+    function validateForm() {
+      
+        document.querySelectorAll('.error').forEach(el => el.textContent = '');
+        document.getElementById('resultMessage').textContent = '';
+
+     
+        const name = document.getElementById('name').value.trim();
+        const email = document.getElementById('email').value.trim();
+        const birthdate = document.getElementById('birthdate').value;
+        const gender = document.getElementById('gender').value;
+        const maritalStatus = document.getElementById('maritalStatus').value;
+        const interests = document.querySelectorAll('input[name="interests"]:checked');
+
+        let valid = true;
+
+        
+        if (name.length < 15) {
+            document.getElementById('nameError').textContent = 'O nome deve ter pelo menos 15 caracteres.';
+            valid = false;
+        }
+
+      
+        const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailPattern.test(email) || email.length < 10) {
+            document.getElementById('emailError').textContent = 'Insira um e-mail válido com pelo menos 10 caracteres.';
+            valid = false;
+        }
+
+        const today = new Date();
+        const birthDateObj = new Date(birthdate);
+        if (birthDateObj >= today || isNaN(birthDateObj.getTime())) {
+            document.getElementById('birthdateError').textContent = 'Insira uma data de nascimento válida.';
+            valid = false;
+        }
+
+       
+        if (maritalStatus === 'solteiro') {
+            const age = today.getFullYear() - birthDateObj.getFullYear();
+            const monthDifference = today.getMonth() - birthDateObj.getMonth();
+            if (monthDifference < 0 || (monthDifference === 0 && today.getDate() < birthDateObj.getDate())) {
+                age--;
+            }
+            if (age < 15) {
+                document.getElementById('maritalStatusError').textContent = 'Para selecionar o sexo você deve ter mais de 15 anos.';
+                valid = false;
+            }
+        }
+
+  
+        if (interests.length === 0) {
+            alert('Por favor, selecione pelo menos uma área de interesse.');
+            valid = false;
+        }
+
+   
+        if (valid) {
+            document.getElementById('resultMessage').textContent = 'Dados enviados com sucesso!';
+            document.getElementById('resultMessage').classList.add('success');
+        } else {
+            document.getElementById('resultMessage').textContent = 'Por favor, corrija os erros antes de enviar.';
+            document.getElementById('resultMessage').classList.remove('success');
+        }
+    }
+</script>
+
+</body>
+</html>
